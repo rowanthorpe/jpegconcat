@@ -8,6 +8,7 @@ Losslessly concatenate jpeg files. Requires jpegtran compiled from latest versio
 
 Although arbitrary (possibly different) image-sizes are fine, probably a degree of consistency is needed between their parameters (compression, etc). I have only tested it for images with identical parameters.
 
+This is a shell-script developed on Linux, but written portably enough it should be fine on anything *nix-like. I haven't even considered Windows, etc as I think the primary value of this is as a POC. The setup instructions below are also aimed only at *nix.
 
 Usage
 -----
