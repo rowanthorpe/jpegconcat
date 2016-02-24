@@ -55,7 +55,7 @@ die_u() {
     die "$@"
 }
 
-dbgprint() { test 1 -ne $debug || printf "$@" >&2; }
+dbgprint() { test 1 -ne $debug || printf -- "$@" >&2; }
 
 while test $# -ne 0; do
     case "$1" in
@@ -99,11 +99,11 @@ done
 trap 'rm -f "$bufferfile" "$pivotfile" 2>/dev/null' EXIT
 bufferfile=`mktemp` || die 'failed to create temp bufferfile\n'
 pivotfile=`mktemp` || die 'failed to create temp pivotfile\n'
-dbgprint 'created temp bufferfile and pivotfile\n'
+dbgprint 'created bufferfile "%s" and pivotfile "%s"\n' "$bufferfile" "$pivotfile"
 
 cp "$1" "$bufferfile"
 shift
-dbgprint 'copied first file to bufferfile\n'
+dbgprint 'copied first file to bufferfile "%s"\n' "$bufferfile"
 
 while test $# -ne 0; do
     orig_size=`file -b "$bufferfile" | sed -e 's/^.*, *\([^,]\+\),[^,]\+$/\1/'`
@@ -134,17 +134,17 @@ while test $# -ne 0; do
     cropsize=${final_width}x$final_height
     dbgprint 'cropsize: %s\n' $cropsize
     if test 1 -eq $vertmode; then
-        dropsize=+0+$orig_height
+        droplocation=+0+$orig_height
     else
-        dropsize=+${orig_width}+0
+        droplocation=+${orig_width}+0
     fi
-    dbgprint 'dropsize: %s\n' $dropsize
+    dbgprint 'droplocation: %s\n' $droplocation
 
-    $jpegtran_exec -copy all -crop $cropsize -outfile "$pivotfile" "$bufferfile"
-    dbgprint '- executed expanding copy to pivotfile "%s"\n' "$pivotfile"
-    $jpegtran_exec -copy all -drop $dropsize "$1" -outfile "$bufferfile" "$pivotfile"
-    dbgprint '- executed concatenating copy to bufferfile "%s"\n' "$bufferfile"
+    $jpegtran_exec -perfect -copy all -crop $cropsize -outfile "$pivotfile" "$bufferfile" || die 'failed executing copy "%s" to pivotfile "%s"\n' "$1" "$pivotfile"
+    dbgprint '+ executed expanding copy "%s" to pivotfile "%s"\n' "$1" "$pivotfile"
+    $jpegtran_exec -perfect -copy all -drop $droplocation "$1" -outfile "$bufferfile" "$pivotfile" || die 'failed executing concatenating copy of pivotfile "%s" and "%s" to bufferfile "%s"\n' "$pivotfile" "$1" "$bufferfile"
+    dbgprint '+ executed concatenating copy of pivotfile "%s" and "%s" to bufferfile "%s"\n' "$pivotfile" "$1" "$bufferfile"
     shift
 done
 cat "$bufferfile" >"$outfile"
-dbgprint '- final file output to "%s"\n' "$outfile"
+dbgprint '+ final file output from bufferfile "%s" to "%s"\n' "$bufferfile" "$outfile"
