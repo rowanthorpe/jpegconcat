@@ -30,7 +30,7 @@ Losslessly concatenate jpeg files. Requires jpegtran compiled from latest versio
 source, patched with the 'droppatch' from jpegclub.org
 
 Although arbitrary (possibly different) image-sizes are fine, probably a degree of consistency
-is needed between their parameters (compression, etc). I haven't tested it other than for images
+is needed between their parameters (compression, etc). I have only tested it for images
 with identical parameters.
 
 OPTIONS

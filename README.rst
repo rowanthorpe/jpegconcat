@@ -1,10 +1,21 @@
+jpegconcat.sh
+=============
+
+Description
+-----------
+
+Losslessly concatenate jpeg files. Requires jpegtran compiled from latest version of ijg jpeg source, patched with the 'droppatch' from jpegclub.org
+
+Although arbitrary (possibly different) image-sizes are fine, probably a degree of consistency is needed between their parameters (compression, etc). I have only tested it for images with identical parameters.
+
+
 Usage
 -----
 
 Run the script with -h to see usage info.
 
-How to setup
-------------
+How to setup patched jpegtran
+-----------------------------
 
 * Download and extract the official IJG source http://www.ijg.org/files/jpegsrc.v9b.tar.gz
 
